@@ -4,6 +4,8 @@ import javafx.application.Application;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
@@ -13,6 +15,9 @@ import model.WeatherResponse;
 import service.CoordToTown;
 import service.GetData;
 
+import java.io.FileInputStream;
+
+import static model.WMODescription.getIcon;
 import static model.WMODescription.getWmoDescription;
 
 public class Gui extends Application {
@@ -37,7 +42,17 @@ public class Gui extends Application {
         tempBox.setSpacing(10);
         tempBox.setAlignment(Pos.CENTER);
 
-        VBox root = new VBox(weather, tempBox, wmo);
+        String iconPath = getIcon(res.current.weather_code);
+        Image weatherIcon = new Image(getClass().getResourceAsStream(iconPath));
+        ImageView iconView = new ImageView(weatherIcon);
+        iconView.setFitWidth(120);
+        iconView.setFitHeight(120);
+
+        VBox vbox = new VBox(weather, iconView, tempBox);
+        vbox.setSpacing(10);
+        vbox.setAlignment(Pos.CENTER);
+
+        VBox root = new VBox(vbox, wmo);
         root.setSpacing(50);
         root.setAlignment(Pos.CENTER);
 
