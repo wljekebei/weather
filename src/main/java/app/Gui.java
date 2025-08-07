@@ -25,7 +25,6 @@ import java.io.IOException;
 
 import static model.WMODescription.getIcon;
 import static model.WMODescription.getWmoDescription;
-import static service.TownToCoord.Convert;
 
 public class Gui extends Application {
     @Override
@@ -33,7 +32,7 @@ public class Gui extends Application {
         WeatherResponse res = GetData.fetchData(40.7127281, -74.0060152);
         TownResponse townData = CoordToTown.Convert(res.latitude, res.longitude);
 
-        Label weather = new Label(String.format("Current weather in %s, %s", municipality(townData), townData.address.country));
+        Label weather = new Label(String.format("Current weather in %s, %s", municipality(townData, "New York"), townData.address.country));
         weather.setFont(Font.font("Arial", FontWeight.BOLD, 22));
 
         Label temperature = new Label(String.format("%d %s", Math.round(res.current.temperature_2m), res.current_units.temperature_2m));
@@ -73,7 +72,7 @@ public class Gui extends Application {
                         Thread.sleep(1100);
                         resp = GetData.fetchData(coords[0], coords[1]);
                         TownResponse townData = CoordToTown.Convert(resp.latitude, resp.longitude);
-                        weather.setText(String.format("Current weather in %s, %s", municipality(townData), townData.address.country));
+                        weather.setText(String.format("Current weather in %s, %s", municipality(townData, locationField.getText()), townData.address.country));
                     }
                 } catch (IOException | InterruptedException ex) {
                     weather.setText(ex.getMessage());
@@ -105,10 +104,14 @@ public class Gui extends Application {
         stage.show();
     }
 
-    public static String municipality (TownResponse townData) {
+    public static String municipality (TownResponse townData, String request) {
         if (townData.address.city == null) {
             if (townData.address.town == null) {
-                return townData.address.village;
+                if (townData.address.village == null) {
+                    return request;
+                } else {
+                    return townData.address.village;
+                }
             } else {
                 return townData.address.town;
             }
