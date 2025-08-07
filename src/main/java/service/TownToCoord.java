@@ -17,7 +17,7 @@ import static service.Secrets.GEOCODING_API_KEY;
 
 public class TownToCoord {
     public static double [] Convert (String address) throws IOException, InterruptedException {
-        address.replace(" ", "-");
+        address = address.replace(" ", "-");
         String url = "https://geocode.maps.co/search?q=" + address + "&api_key=" + GEOCODING_API_KEY;
 
         HttpRequest request = HttpRequest.newBuilder()

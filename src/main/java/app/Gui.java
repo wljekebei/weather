@@ -21,7 +21,6 @@ import service.CoordToTown;
 import service.GetData;
 import service.TownToCoord;
 
-import java.io.FileInputStream;
 import java.io.IOException;
 
 import static model.WMODescription.getIcon;
@@ -34,7 +33,7 @@ public class Gui extends Application {
         WeatherResponse res = GetData.fetchData(40.7127281, -74.0060152);
         TownResponse townData = CoordToTown.Convert(res.latitude, res.longitude);
 
-        Label weather = new Label(String.format("Current weather in %s, %s", townData.address.town, townData.address.country));
+        Label weather = new Label(String.format("Current weather in %s, %s", (townData.address.town == null) ? townData.address.city : townData.address.town, townData.address.country));
         weather.setFont(Font.font("Arial", FontWeight.BOLD, 22));
 
         Label temperature = new Label(String.format("%d %s", Math.round(res.current.temperature_2m), res.current_units.temperature_2m));
@@ -46,6 +45,17 @@ public class Gui extends Application {
         Label wmo = new Label(String.format("%s", getWmoDescription(res.current.weather_code)));
         wmo.setFont(Font.font("Arial", FontWeight.SEMI_BOLD, 30));
 
+
+        VBox tempBox = new VBox(temperature, feelsLike);
+        tempBox.setSpacing(10);
+        tempBox.setAlignment(Pos.CENTER);
+
+        String iconPath = getIcon(res.current.weather_code);
+        Image weatherIcon = new Image(getClass().getResourceAsStream(iconPath));
+        final ImageView[] iconView = {new ImageView(weatherIcon)};
+        iconView[0].setFitWidth(120);
+        iconView[0].setFitHeight(120);
+
         TextField locationField = new TextField();
         locationField.setFont(Font.font("Arial", FontWeight.MEDIUM, 22));
 
@@ -56,9 +66,24 @@ public class Gui extends Application {
         refreshButton.setFont(Font.font("Arial", FontWeight.MEDIUM, 22));
         refreshButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override public void handle(ActionEvent e) {
-                double [] coords = TownToCoord.Convert(locationField.getText());
-                WeatherResponse res = GetData.fetchData(coords[0], coords[1]);
-                TownResponse townData = CoordToTown.Convert(res.latitude, res.longitude);
+                WeatherResponse resp = null;
+                try {
+                    if (locationField.getText() != null) {
+                        double[] coords = TownToCoord.Convert(locationField.getText());
+                        Thread.sleep(1100);
+                        resp = GetData.fetchData(coords[0], coords[1]);
+                        TownResponse townData = CoordToTown.Convert(resp.latitude, resp.longitude);
+                        weather.setText(String.format("Current weather in %s, %s", (townData.address.town == null) ? townData.address.city : townData.address.town, townData.address.country));
+                    }
+                } catch (IOException | InterruptedException ex) {
+                    weather.setText(ex.getMessage());
+                }
+                assert resp != null;
+                temperature.setText(String.format("%d %s", Math.round(resp.current.temperature_2m), resp.current_units.temperature_2m));
+                feelsLike.setText(String.format("Feels like %d %s", Math.round(resp.current.apparent_temperature), resp.current_units.apparent_temperature));
+                wmo.setText(String.format("%s", getWmoDescription(resp.current.weather_code)));
+                String iconPath1 = getIcon(resp.current.weather_code);
+                iconView[0].setImage(new Image(getClass().getResourceAsStream(iconPath1)));
             }
         });
 
@@ -66,17 +91,7 @@ public class Gui extends Application {
         loc.setAlignment(Pos.CENTER);
         loc.setSpacing(20);
 
-        VBox tempBox = new VBox(temperature, feelsLike);
-        tempBox.setSpacing(10);
-        tempBox.setAlignment(Pos.CENTER);
-
-        String iconPath = getIcon(res.current.weather_code);
-        Image weatherIcon = new Image(getClass().getResourceAsStream(iconPath));
-        ImageView iconView = new ImageView(weatherIcon);
-        iconView.setFitWidth(120);
-        iconView.setFitHeight(120);
-
-        VBox vbox = new VBox(weather, iconView, tempBox);
+        VBox vbox = new VBox(weather, iconView[0], tempBox);
         vbox.setSpacing(10);
         vbox.setAlignment(Pos.CENTER);
 

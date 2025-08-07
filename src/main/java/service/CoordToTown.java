@@ -24,6 +24,11 @@ public class CoordToTown {
 
         String body = response.body();
 
+        if (!body.startsWith("{")) {
+            System.out.println(body);
+            throw new IOException("Error: Too many requests");
+        }
+
         GsonBuilder gsonBuilder = new GsonBuilder();
         Gson gson = gsonBuilder.create();
 
