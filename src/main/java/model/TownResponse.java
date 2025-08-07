@@ -8,6 +8,7 @@ public class TownResponse {
         public String county;
         public String country;
         public String postcode;
+        public String village;
     }
 
     public Address address;
