@@ -3,14 +3,12 @@ package service;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import model.TownResponse;
-import model.WeatherResponse;
 
 import java.io.IOException;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
-import java.util.List;
 
 import static service.Secrets.GEOCODING_API_KEY;
 
