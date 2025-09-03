@@ -14,6 +14,8 @@ public class WeatherResponse {
     public Current current;
     public HourlyUnits hourly_units;
     public Hourly hourly;
+    public DailyUnits daily_units;
+    public Daily daily;
 
     public static class Units {
         public String time;
@@ -43,5 +45,21 @@ public class WeatherResponse {
         public List <Double> temperature_2m;
         public List <Double> apparent_temperature;
         public List <Integer> weather_code;
+    }
+
+    public static class DailyUnits {
+        public String time;
+        public String weather_code;
+        public String temperature_2m_max;
+        public String temperature_2m_min;
+        public String temperature_2m_mean;
+    }
+
+    public static class Daily {
+        public List <String> time;
+        public List <Integer> weather_code;
+        public List <Double> temperature_2m_max;
+        public List <Double> temperature_2m_min;
+        public List <Double> temperature_2m_mean;
     }
 }

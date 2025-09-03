@@ -31,9 +31,9 @@ public class WMODescription {
         descMap.put(82, "Violent rain showers");
         descMap.put(85, "Slight snow showers");
         descMap.put(86, "Heavy snow showers");
-        descMap.put(95, "Thunderstorm: Slight or moderate");
-        descMap.put(96, "Thunderstorm with slight hail");
-        descMap.put(99, "Thunderstorm with heavy hail");
+        descMap.put(95, "Thunderstorm");
+        descMap.put(96, "Thunderstorm");
+        descMap.put(99, "Thunderstorm");
     }
 
     public static final Map<Integer, String> iconMap = new HashMap<>();

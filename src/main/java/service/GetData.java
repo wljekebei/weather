@@ -12,8 +12,7 @@ import java.net.http.HttpResponse;
 
 public class GetData {
     public static WeatherResponse fetchData (double lat, double lon) throws IOException, InterruptedException {
-        String url = "https://api.open-meteo.com/v1/forecast?latitude=" + lat + "&longitude=" + lon + "&hourly=temperature_2m,apparent_temperature,weather_code&current=temperature_2m,apparent_temperature,weather_code&timezone=auto&past_days=1&forecast_days=3";
-
+        String url = "https://api.open-meteo.com/v1/forecast?latitude=" + lat + "&longitude=" + lon + "&daily=weather_code,temperature_2m_max,temperature_2m_min,temperature_2m_mean&hourly=temperature_2m,apparent_temperature,weather_code&current=temperature_2m,apparent_temperature,weather_code&timezone=auto&past_days=1&forecast_days=3";
         HttpRequest request = HttpRequest.newBuilder().GET()
                 .uri(URI.create(url))
                 .build();
